@@ -1,0 +1,19 @@
+name: Update README
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update_readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      
+      - name: Update README
+        run: python update_readme.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
