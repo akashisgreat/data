@@ -1,0 +1,34 @@
+name: Update File Tree and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # or your default branch
+  schedule:
+    - cron: '0 0 * * 0'  # Runs weekly
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Generate file tree with links
+      run: |
+        sudo apt-get update
+        sudo apt-get install tree
+        tree -H '.' -L 5 --noreport --charset utf-8 -T "Repository File Tree" > file_tree.html
+
+    - name: Create or update index.html
+      run: |
+        echo "<h1>Repository File Tree</h1>" > index.html
+        cat file_tree.html >> index.html
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
+
